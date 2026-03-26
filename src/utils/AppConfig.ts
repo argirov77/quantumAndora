@@ -1,7 +1,11 @@
 export const AppConfig = {
-  site_name: 'BRITSTAR MANAGEMENT LIMITED',
-  title: 'Performance Marketing & Affiliate Agency',
+  site_name: 'Quantum Advertising SLU',
+  title: 'Quantum Advertising — Performance Marketing Agency in Andorra',
   description:
-    'Specializing in affiliate marketing, Google Ads and Facebook Ads to drive targeted traffic and measurable growth.',
+    'Quantum Advertising SLU is a data-driven affiliate marketing agency specialising in CPA, CPS, and RevShare models. We connect brands with high-intent audiences at scale.',
   locale: 'en',
+  url: 'https://quantumads.online',
+  email: 'main@quantumads.online',
+  phone: '+376 333364',
+  address: 'Carrer Bisbe Príncep Iglesias, Núm. 1, 8 A, Andorra la Vella',
 };

@@ -4,53 +4,49 @@ import { motion, useAnimation } from 'framer-motion';
 
 function useOnScreen(
   ref: MutableRefObject<HTMLDivElement | null>,
-  rootMargin = '0px'
+  rootMargin = '0px',
 ) {
   const [isIntersecting, setIntersecting] = useState(false);
 
   useEffect(() => {
-    let currentRef: any = null;
+    let currentRef: Element | null = null;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry?.isIntersecting) setIntersecting(entry?.isIntersecting);
+        if (entry?.isIntersecting) setIntersecting(true);
       },
-      {
-        rootMargin,
-      }
+      { rootMargin },
     );
-    if (ref && ref?.current) {
+    if (ref?.current) {
       currentRef = ref.current;
       observer.observe(currentRef);
     }
     return () => {
-      observer.unobserve(currentRef);
+      if (currentRef) observer.unobserve(currentRef);
     };
-  }, [ref, rootMargin]); // Empty array ensures that effect is only run on mount and unmount
+  }, [ref, rootMargin]);
 
   return isIntersecting;
 }
 
-const LazyShow = ({ children }: { children: React.ReactChild }) => {
+const LazyShow = ({ children }: { children: React.ReactNode }) => {
   const controls = useAnimation();
   const rootRef = useRef<HTMLDivElement>(null);
-  const onScreen = useOnScreen(rootRef);
+  const onScreen = useOnScreen(rootRef, '-60px');
+
   useEffect(() => {
     if (onScreen) {
       controls.start({
-        x: 0,
+        y: 0,
         opacity: 1,
-        transition: {
-          duration: 0.5,
-          ease: 'easeOut',
-        },
+        transition: { duration: 0.6, ease: 'easeOut' },
       });
     }
   }, [onScreen, controls]);
+
   return (
     <motion.div
-      className="lazy-div"
       ref={rootRef}
-      initial={{ opacity: 0, x: -50 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={controls}
     >
       {children}

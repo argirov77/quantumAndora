@@ -1,122 +1,177 @@
 import React from 'react';
 
-import config from '../config/index.json';
+import LazyShow from './LazyShow';
 
-const Pricing = () => {
-  const { pricing } = config;
-  const { items, title } = pricing;
-  const [firstPlan, secondPlan, thirdPlan] = items;
+const PRICING_MODELS = [
+  {
+    model: 'CPS',
+    label: 'Cost Per Sale',
+    description:
+      'You pay only when a conversion is confirmed. Pure performance accountability.',
+    highlight: false,
+  },
+  {
+    model: 'RevShare',
+    label: 'Revenue Share',
+    description:
+      'A percentage of generated revenue — aligning our incentives directly with your growth.',
+    highlight: true,
+  },
+  {
+    model: 'CPL',
+    label: 'Cost Per Lead',
+    description:
+      'Pay per qualified lead delivered to your funnel. Predictable scaling.',
+    highlight: false,
+  },
+];
+
+const Pricing: React.FC = () => {
+  const scrollToContact = () => {
+    const el = document.querySelector('#contact');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <section className={`bg-background py-8`} id="pricing">
-      <div className={`container mx-auto px-2 pt-4 pb-12 text-primary`}>
-        <h1
-          className={`w-full my-2 text-5xl font-bold leading-tight text-center text-primary`}
-        >
-          {title}
-        </h1>
-        <div className={`w-full mb-4`}>
-          <div
-            className={`h-1 mx-auto bg-primary w-64 opacity-25 my-0 py-0 rounded-t`}
-          ></div>
-        </div>
-        <div
-          className={`flex flex-col sm:flex-row justify-center pt-12 my-12 sm:my-4`}
-        >
-          <div
-            className={`flex flex-col w-5/6 lg:w-1/4 mx-auto lg:mx-0 rounded-none lg:rounded-l-lg bg-background mt-4`}
-          >
-            <div
-              className={`flex-1 bg-background text-gray-600 rounded-t rounded-b-none overflow-hidden shadow`}
+    <section
+      id="pricing"
+      className="py-24 px-4 sm:px-6 lg:px-8"
+      style={{ background: 'rgba(255,255,255,0.02)' }}
+    >
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <LazyShow>
+          <div className="text-center mb-16">
+            <p
+              className="text-sm font-medium tracking-widest uppercase mb-4"
+              style={{
+                color: '#00D4FF',
+                fontFamily: 'DM Sans, sans-serif',
+                letterSpacing: '0.2em',
+              }}
             >
-              <div className={`p-8 text-3xl font-bold text-center border-b-4`}>
-                {firstPlan?.name}
-              </div>
-              <ul className={`w-full text-center text-sm`}>
-                {firstPlan?.features.map((feature) => (
-                  <li
-                    className={`border-b py-4`}
-                    key={`${firstPlan.name}-${feature}`}
-                  >
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div
-              className={`flex-none mt-auto bg-background rounded-b rounded-t-none overflow-hidden shadow p-6`}
+              Flexible Models
+            </p>
+            <h2
+              className="font-bold text-white"
+              style={{
+                fontFamily: 'Syne, sans-serif',
+                fontSize: 'clamp(1.8rem, 4vw, 2.75rem)',
+              }}
             >
+              PRICING MODELS
+            </h2>
+            <div
+              className="mx-auto mt-5 h-px w-24"
+              style={{
+                background: 'linear-gradient(90deg, #00D4FF, transparent)',
+              }}
+            />
+          </div>
+        </LazyShow>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {PRICING_MODELS.map((item) => (
+            <LazyShow key={item.model}>
               <div
-                className={`w-full pt-6 text-3xl text-gray-600 font-bold text-center`}
+                className="relative flex flex-col p-8 rounded-xl transition-all duration-300 h-full"
+                style={{
+                  background: item.highlight
+                    ? 'rgba(0, 212, 255, 0.07)'
+                    : 'rgba(255,255,255,0.04)',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  border: `1px solid ${
+                    item.highlight
+                      ? 'rgba(0,212,255,0.2)'
+                      : 'rgba(255,255,255,0.08)'
+                  }`,
+                  borderTop: '2px solid #00D4FF',
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLDivElement;
+                  el.style.transform = 'translateY(-6px)';
+                  el.style.boxShadow = '0 12px 40px rgba(0, 212, 255, 0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLDivElement;
+                  el.style.transform = 'translateY(0)';
+                  el.style.boxShadow = 'none';
+                }}
               >
-                {firstPlan?.price}
-                <span className={`text-base`}> {firstPlan?.priceDetails}</span>
-              </div>
-            </div>
-          </div>
-          <div
-            className={`flex flex-col w-5/6 lg:w-1/3 mx-auto lg:mx-0 rounded-lg bg-background mt-4 sm:-mt-6 shadow-lg z-10`}
-          >
-            <div
-              className={`flex-1 bg-background rounded-t rounded-b-none overflow-hidden shadow`}
-            >
-              <div className={`w-full p-8 text-3xl font-bold text-center`}>
-                {secondPlan?.name}
-              </div>
-              <div
-                className={`h-1 w-full bg-primary my-0 py-0 rounded-t`}
-              ></div>
-              <ul className={`w-full text-center text-base font-bold`}>
-                {secondPlan?.features.map((feature) => (
-                  <li
-                    className={`border-b py-4`}
-                    key={`${secondPlan?.name}-${feature}`}
+                {item.highlight && (
+                  <div
+                    className="absolute -top-3 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full text-xs font-semibold"
+                    style={{
+                      background: '#00D4FF',
+                      color: '#0A0F1E',
+                      fontFamily: 'DM Sans, sans-serif',
+                    }}
                   >
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div
-              className={`flex-none mt-auto bg-background rounded-b rounded-t-none overflow-hidden shadow p-6`}
-            >
-              <div className={`w-full pt-6 text-4xl font-bold text-center`}>
-                {secondPlan?.price}
-                <span className={`text-base`}> {secondPlan?.priceDetails}</span>
+                    POPULAR
+                  </div>
+                )}
+
+                <div
+                  className="text-4xl font-bold mb-1"
+                  style={{ color: '#00D4FF', fontFamily: 'Syne, sans-serif' }}
+                >
+                  {item.model}
+                </div>
+                <div
+                  className="text-sm font-medium mb-6"
+                  style={{
+                    color: '#A0AEC0',
+                    fontFamily: 'DM Sans, sans-serif',
+                  }}
+                >
+                  {item.label}
+                </div>
+
+                <div
+                  className="h-px mb-6"
+                  style={{ background: 'rgba(255,255,255,0.08)' }}
+                />
+
+                <p
+                  className="leading-relaxed flex-1"
+                  style={{
+                    color: '#A0AEC0',
+                    fontFamily: 'DM Sans, sans-serif',
+                    lineHeight: 1.75,
+                  }}
+                >
+                  {item.description}
+                </p>
+
+                <button
+                  onClick={scrollToContact}
+                  className="mt-8 w-full py-3 rounded text-sm font-semibold transition-all duration-200 focus:outline-none"
+                  style={{
+                    border: '1px solid #00D4FF',
+                    color: '#00D4FF',
+                    background: 'transparent',
+                    fontFamily: 'DM Sans, sans-serif',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background =
+                      '#00D4FF';
+                    (e.currentTarget as HTMLButtonElement).style.color =
+                      '#0A0F1E';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background =
+                      'transparent';
+                    (e.currentTarget as HTMLButtonElement).style.color =
+                      '#00D4FF';
+                  }}
+                >
+                  Get Started
+                </button>
               </div>
-            </div>
-          </div>
-          <div
-            className={`flex flex-col w-5/6 lg:w-1/4 mx-auto lg:mx-0 rounded-none lg:rounded-l-lg bg-primary mt-4`}
-          >
-            <div
-              className={`flex-1 bg-background text-gray-600 rounded-t rounded-b-none overflow-hidden shadow`}
-            >
-              <div className={`p-8 text-3xl font-bold text-center border-b-4`}>
-                {thirdPlan?.name}
-              </div>
-              <ul className={`w-full text-center text-sm`}>
-                {thirdPlan?.features.map((feature) => (
-                  <li
-                    className={`border-b py-4`}
-                    key={`${thirdPlan?.name}-${feature}`}
-                  >
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div
-              className={`flex-none mt-auto bg-background rounded-b rounded-t-none overflow-hidden shadow p-6`}
-            >
-              <div
-                className={`w-full pt-6 text-3xl text-gray-600 font-bold text-center`}
-              >
-                {thirdPlan?.price}
-                <span className={`text-base`}> {thirdPlan?.priceDetails}</span>
-              </div>
-            </div>
-          </div>
+            </LazyShow>
+          ))}
         </div>
       </div>
     </section>
