@@ -3,6 +3,10 @@ module.exports = {
   purge: ['./src/**/*.{js,ts,jsx,tsx}'],
   darkMode: false,
   theme: {
+    fontFamily: {
+      sans: ['DM Sans', 'sans-serif'],
+      display: ['Syne', 'sans-serif'],
+    },
     fontSize: {
       xs: '0.75rem',
       sm: '0.875rem',
@@ -14,29 +18,22 @@ module.exports = {
       '4xl': '2.25rem',
       '5xl': '3rem',
       '6xl': '4rem',
+      '7xl': '5rem',
     },
     extend: {
       colors: {
-        primary: '#ec4755',
-        secondary: '#a12c34',
-        tertiary: '#99a0a3',
-        border: '#1a2e35',
-        background: '#ffffff',
+        background: '#0A0F1E',
+        accent: '#00D4FF',
+        'text-primary': '#FFFFFF',
+        'text-secondary': '#A0AEC0',
       },
       animation: {
-        vote: 'vote 1s ease-in-out',
+        'fade-up': 'fadeUp 0.6s ease-out forwards',
       },
       keyframes: {
-        vote: {
-          '0%, 100%': {
-            transform: 'rotate(0deg)',
-          },
-          '25%': {
-            transform: 'rotate(-30deg)',
-          },
-          '75%': {
-            transform: 'rotate(30deg)',
-          },
+        fadeUp: {
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
     },

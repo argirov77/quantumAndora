@@ -1,130 +1,175 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import { Popover, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
-import { Link } from 'react-scroll';
 
-import config from '../config/index.json';
+const NAV_LINKS = [
+  { name: 'About', href: '#about' },
+  { name: 'Advantages', href: '#advantages' },
+  { name: 'Traffic Sources', href: '#traffic' },
+  { name: 'Pricing', href: '#pricing' },
+  { name: 'Contact', href: '#contact' },
+];
 
-const Menu: React.FC = () => {
-  const { navigation, company, callToAction } = config;
-  const { name: companyName, logo } = company;
+const Header: React.FC = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scrollTo = (href: string, close?: () => void) => {
+    const el = document.querySelector(href);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (close) close();
+  };
 
   return (
-    <>
-      <svg
-        className="hidden lg:block absolute right-0 inset-y-0 h-full w-48 text-background transform translate-x-1/2"
-        fill="currentColor"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <polygon points="50,0 100,0 50,100 0,100" />
-      </svg>
-
-      <Popover>
-        <div className="relative pt-6 px-4 sm:px-6 lg:px-8">
-          <nav
-            className="relative flex items-center justify-between sm:h-10 lg:justify-start"
-            aria-label="Global"
+    <header
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      style={{
+        background: scrolled
+          ? 'rgba(10, 15, 30, 0.92)'
+          : 'rgba(10, 15, 30, 0.6)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : 'none',
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 lg:h-20">
+          {/* Logo */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex flex-col leading-none focus:outline-none"
           >
-            <div className="flex items-center flex-grow lg:flex-grow-0">
-              <Link to="home" smooth duration={500}>
-                <span className="sr-only">{companyName}</span>
-                <img
-                  src={logo}
-                  alt={companyName}
-                  className="h-16 w-auto sm:h-16"
-                />
-              </Link>
-              <div className="-mr-2 flex items-center md:hidden">
-                <Popover.Button className="bg-background rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-secondary">
-                  <span className="sr-only">Open main menu</span>
-                  <MenuIcon className="h-6 w-6" aria-hidden="true" />
-                </Popover.Button>
-              </div>
-            </div>
+            <span
+              className="text-white font-display font-bold tracking-wider"
+              style={{
+                fontFamily: 'Syne, sans-serif',
+                fontSize: '1.4rem',
+                letterSpacing: '0.1em',
+              }}
+            >
+              QUANTUM
+            </span>
+            <span
+              className="text-xs tracking-widest uppercase"
+              style={{
+                color: '#00D4FF',
+                fontFamily: 'DM Sans, sans-serif',
+                letterSpacing: '0.25em',
+              }}
+            >
+              advertising
+            </span>
+          </button>
 
-            {/* Desktop */}
-            <div className="hidden md:flex md:ml-10 md:space-x-8 whitespace-nowrap">
-              {navigation.map((item) => (
-                <Link
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center space-x-8">
+            {NAV_LINKS.map((item) =>
+              item.name === 'Contact' ? (
+                <button
                   key={item.name}
-                  to={item.href}
-                  spy
-                  smooth
-                  duration={500}
-                  className="font-medium text-gray-500 hover:text-gray-900 cursor-pointer"
+                  onClick={() => scrollTo(item.href)}
+                  className="px-5 py-2 rounded text-sm font-medium transition-all duration-200 focus:outline-none"
+                  style={{
+                    background: '#00D4FF',
+                    color: '#0A0F1E',
+                    fontFamily: 'DM Sans, sans-serif',
+                    fontWeight: 600,
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background =
+                      '#00b8db';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background =
+                      '#00D4FF';
+                  }}
                 >
                   {item.name}
-                </Link>
-              ))}
-              <Link
-                to={callToAction.href}
-                spy
-                smooth
-                duration={500}
-                className="font-medium text-primary hover:text-secondary cursor-pointer"
-              >
-                {callToAction.text}
-              </Link>
-            </div>
-          </nav>
-        </div>
-
-        {/* Mobile */}
-        <Transition
-          as={Fragment}
-          enter="duration-150 ease-out"
-          enterFrom="opacity-0 scale-95"
-          enterTo="opacity-100 scale-100"
-          leave="duration-100 ease-in"
-          leaveFrom="opacity-100 scale-100"
-          leaveTo="opacity-0 scale-95"
-        >
-          <Popover.Panel
-            focus
-            className="absolute z-10 top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
-          >
-            <div className="rounded-lg shadow-md bg-background ring-1 ring-black ring-opacity-5 overflow-hidden">
-              <div className="px-5 pt-4 flex items-center justify-between">
-                <img src={logo} alt={companyName} className="h-8 w-auto" />
-                <Popover.Button className="bg-background rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-secondary">
-                  <span className="sr-only">Close main menu</span>
-                  <XIcon className="h-6 w-6" aria-hidden="true" />
-                </Popover.Button>
-              </div>
-              <div className="px-2 pt-2 pb-3 space-y-1">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    spy
-                    smooth
-                    duration={500}
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 cursor-pointer"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-              <div className="px-5 pb-4">
-                <Link
-                  to={callToAction.href}
-                  spy
-                  smooth
-                  duration={500}
-                  className="block w-full px-5 py-3 text-center font-medium text-primary bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                </button>
+              ) : (
+                <button
+                  key={item.name}
+                  onClick={() => scrollTo(item.href)}
+                  className="text-sm font-medium transition-colors duration-200 focus:outline-none"
+                  style={{
+                    color: '#A0AEC0',
+                    fontFamily: 'DM Sans, sans-serif',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color =
+                      '#FFFFFF';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color =
+                      '#A0AEC0';
+                  }}
                 >
-                  {callToAction.text}
-                </Link>
-              </div>
-            </div>
-          </Popover.Panel>
-        </Transition>
-      </Popover>
-    </>
+                  {item.name}
+                </button>
+              ),
+            )}
+          </nav>
+
+          {/* Mobile burger */}
+          <Popover className="md:hidden">
+            {({ open, close }) => (
+              <>
+                <Popover.Button className="focus:outline-none text-white p-2">
+                  {open ? (
+                    <XIcon className="h-6 w-6" />
+                  ) : (
+                    <MenuIcon className="h-6 w-6" />
+                  )}
+                </Popover.Button>
+
+                <Transition
+                  as={Fragment}
+                  enter="duration-200 ease-out"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="duration-150 ease-in"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Popover.Panel
+                    className="absolute top-full left-0 right-0 mt-0"
+                    style={{
+                      background: 'rgba(10, 15, 30, 0.97)',
+                      backdropFilter: 'blur(20px)',
+                      borderBottom: '1px solid rgba(255,255,255,0.1)',
+                    }}
+                  >
+                    <nav className="flex flex-col px-6 py-4 space-y-1">
+                      {NAV_LINKS.map((item) => (
+                        <button
+                          key={item.name}
+                          onClick={() => scrollTo(item.href, close)}
+                          className="text-left py-3 text-base font-medium border-b focus:outline-none"
+                          style={{
+                            color: '#A0AEC0',
+                            borderColor: 'rgba(255,255,255,0.06)',
+                            fontFamily: 'DM Sans, sans-serif',
+                          }}
+                        >
+                          {item.name}
+                        </button>
+                      ))}
+                    </nav>
+                  </Popover.Panel>
+                </Transition>
+              </>
+            )}
+          </Popover>
+        </div>
+      </div>
+    </header>
   );
 };
 
-export default Menu;
+export default Header;
