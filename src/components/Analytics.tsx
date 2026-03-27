@@ -294,7 +294,7 @@ const Contact: React.FC = () => {
             className="text-sm"
             style={{ color: '#A0AEC0', fontFamily: 'DM Sans, sans-serif' }}
           >
-            © 2025 Quantum Advertising SLU. All rights reserved.
+            © 2026 Quantum Advertising SLU. All rights reserved.
           </p>
         </div>
       </footer>
